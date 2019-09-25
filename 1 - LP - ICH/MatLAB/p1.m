@@ -1,4 +1,5 @@
-clear plot_transfer_function_nofig; clc
+clear plot_transfer_function_nofig
+clc
 AEM = [9 0 2 6];
 
 %% Design Requirements ( Inverse Chebysev BE )
