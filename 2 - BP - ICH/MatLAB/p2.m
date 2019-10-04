@@ -125,6 +125,17 @@ for zi = 1 : n_pairs
     
 end
 
+% Pole-Zero Plot
+[pole_plus, pole_minus] = bp_poles(1).sigmaOmega;
+P = [pole_plus, pole_minus];
+for k = 2 : length( bp_poles )
+    [pole_plus, pole_minus] = bp_poles(k).sigmaOmega;
+    P = cat( 2, P, [pole_plus, pole_minus] );
+end
+
+Z = cat( 1, 1i * bp_zeros, -1i * bp_zeros );
+pzplot( zpk( Z, P', 1 ) )
+
 
 %% Utilize Units
 %   - init units holder

@@ -104,13 +104,13 @@ A = units(1).TF;
 % Plot tf of each sub-unit
 for k = 1 : n_units
    
-%     plot_transfer_function( ...
-%         units(k).TF, ...
-%         ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] ...
-%     );
-% 
-%     set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
-%         'numbertitle','off' );
+    plot_transfer_function( ...
+        units(k).TF, ...
+        ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] ...
+    );
+
+    set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
+        'numbertitle','off' );
     
     % Calculate Gain at HF
     LF_Gain = LF_Gain * units(k).k_lf;
@@ -126,9 +126,9 @@ end
 % Compensate gain ( gain @ DC should be $LF_Gain_Req_DB dB )
 A = ( 10^( LF_Gain_Req_DB / 20 ) ) * ( 1 / LF_Gain ) * A;
 
-% % Plot Amplitude
-% plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] );
-% set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
+% Plot Amplitude
+plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] );
+set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
 % % Plot Attenuation
 % a = inv(A);

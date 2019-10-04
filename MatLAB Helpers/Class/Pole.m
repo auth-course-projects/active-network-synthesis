@@ -8,6 +8,10 @@ classdef Pole
         sigma
         omega
         
+        % omega_0, Q
+        omega_0 = NaN
+        q = NaN
+        
         is_real
     end
     
@@ -19,13 +23,25 @@ classdef Pole
             obj.omega = omega;
             
             obj.is_real = ( omega == 0 );
+            
+            omega_0 = sqrt( sumsqr( [sigma; omega] ) );
+            obj.omega_0 = omega_0;
+            obj.q = omega_0 / ( 2 * sigma );
         end
         
         function omega_0 = Omega0(obj)
-            omega_0 = sqrt( sumsqr( [obj.sigma; obj.omega] ) );
+            if isnan( obj.omega_0 )
+                omega_0 = sqrt( sumsqr( [obj.sigma; obj.omega] ) );
+            else
+                omega_0 = obj.omega_0;
+            end
         end
         function q = Q(obj)
-            q = obj.Omega0 / ( 2 * obj.sigma );
+            if isnan( obj.omega_0 )
+                q = obj.Omega0 / ( 2 * obj.sigma );
+            else
+                q = obj.q;
+            end
         end
         
         function obj = scaleOmega0(obj, Omega_k)
@@ -34,6 +50,11 @@ classdef Pole
         
         function inversePole = inverse(obj)
             inversePole = Pole.fromOmega0AndQ( 1 / obj.Omega0, obj.Q );
+        end
+        
+        function [pole_plus, pole_minus] = sigmaOmega(obj)
+            pole_plus = -obj.sigma + 1i * obj.omega;
+            pole_minus = -obj.sigma - 1i * obj.omega;
         end
         
     end

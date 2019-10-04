@@ -33,7 +33,7 @@ function boctorLPN = boctor_lpn(unit)
     
     %% Scaling
     % requirements
-    C_1n = 1e-6;    % 0.01uF
+    C_1n = 1e-8;    % 0.01uF
     
     % scaling coefficients
     k_f = unit.omega_0;
@@ -42,8 +42,6 @@ function boctorLPN = boctor_lpn(unit)
     % scale resistors
     unit.R = unit.R .* k_m;
     unit.C = unit.C ./ ( k_m * k_f );
-    
-    ccc = unit.C(1)
     
     
     %% Transfer function
