@@ -134,7 +134,7 @@ for k = 2 : length( bp_poles )
 end
 
 Z = cat( 1, 1i * bp_zeros, -1i * bp_zeros );
-pzplot( zpk( Z, P', 1 ) )
+% pzplot( zpk( Z, P', 1 ) )
 
 
 %% Utilize Units
@@ -165,7 +165,7 @@ for k = 1 : n_units
 end
 
 %% Combine sub-units
-Omega_0_Gain = 1;
+hOmega_0_Gain = 1;
 A = units(1).TF;
 
 % Plot tf of each sub-unit
