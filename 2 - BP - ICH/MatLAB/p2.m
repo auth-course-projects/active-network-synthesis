@@ -165,19 +165,19 @@ for k = 1 : n_units
 end
 
 %% Combine sub-units
-hOmega_0_Gain = 1;
+Omega_0_Gain = 1;
 A = units(1).TF;
 
 % Plot tf of each sub-unit
 for k = 1 : n_units
    
-    plot_transfer_function( ...
-        units(k).TF, ...
-        ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
-    );
-
-    set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
-        'numbertitle','off' );
+%     plot_transfer_function( ...
+%         units(k).TF, ...
+%         ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
+%     );
+% 
+%     set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
+%         'numbertitle','off' );
     
     % Calculate Gain at omega_0
     Omega_0_Gain = Omega_0_Gain * squeeze( bode(units(k).TF, omega_0) );
@@ -203,13 +203,14 @@ set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 % set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
 
 
-% %% Test Resulting System
-% t = 0 : 1/40000 : 1/50 - 1/40000;
-% input = cos( ( omega_0 - ( omega_0 - omega_1 ) / 3 ) * t ) + ...
-%     0.6 * cos( ( omega_0 + ( omega_0 + omega_1 ) / 4 ) * t ) + ...
-%     0.7 * cos( 0.5 * omega_3 * t ) + 0.8 * cos( 2.4 * omega_4 * t ) + ...
-%     0.6 * cos( 3 * omega_4 * t );
-% test_sys( A, 'custom', t, input, 40000 );
+%% Test Resulting System
+t = 0 : 1/40000 : 1/50 - 1/40000;
+input = cos( ( omega_0 - ( omega_0 - omega_1 ) / 3 ) * t ) + ...
+    0.6 * cos( ( omega_0 + ( omega_0 + omega_1 ) / 4 ) * t ) + ...
+    0.7 * cos( 0.5 * omega_3 * t ) + 0.8 * cos( 2.4 * omega_4 * t ) + ...
+    0.6 * cos( 3 * omega_4 * t );
+plot( input )
+test_sys( A, 'custom', t, input, 40000 );
 
 
 

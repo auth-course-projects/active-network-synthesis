@@ -63,9 +63,13 @@ end
 
 
 %% Frequency Transformation LP -> HP
+%   - transform poles
 for k = 1 : n_pairs
    poles_ch(k) = poles_ch(k).inverse;
 end
+
+%   - add zeros
+Omega_z = zeros( n_pairs, 1 );
 
 
 %% Frequency Transformation HP -> BE ( Geffe Algorithm )
@@ -82,6 +86,34 @@ for k = 1 : n_pairs
 
 end
 
+%   - transform zeros
+be_zeros = Inf( 2 * n_pairs, 1 );
+bzi = 1;
+for zi = 1 : n_pairs
+    
+    if ( Omega_z( zi ) < Inf )
+        
+        [be_zeros(bzi), be_zeros(bzi + 1)] = ...
+            Pole.geffez( Omega_z( zi ), omega_0, bw );
+        bzi = bzi + 2;
+
+        % PLUS TWO POLES @ omega = 0
+        
+    end
+    
+end
+
+% Pole-Zero Plot
+[pole_plus, pole_minus] = be_poles(1).sigmaOmega;
+P = [pole_plus, pole_minus];
+for k = 2 : length( be_poles )
+    [pole_plus, pole_minus] = be_poles(k).sigmaOmega;
+    P = cat( 2, P, [pole_plus, pole_minus] );
+end
+
+Z = cat( 1, 1i * be_zeros, -1i * be_zeros );
+pzplot( zpk( Z, P', 1 ) )
+
 
 %% Utilize Units
 %   - init units holder
@@ -94,10 +126,10 @@ for k = 1 : n_units
     units( k ) = FilterUnit( ...
         be_poles( k ).Omega0, ...
         be_poles( k ).Q, ...
-        omega_0 ...
+        be_zeros( k ) ...
     );
 
-    if ( be_poles( k ).Omega0 < omega_0 )
+    if ( be_poles( k ).Omega0 < be_zeros( k ) )
         
         units( k ) = fried_lpn( units( k ) );
         
@@ -116,13 +148,13 @@ A = units(1).TF;
 % Plot tf of each sub-unit
 for k = 1 : n_units
    
-    plot_transfer_function( ...
-        units(k).TF, ...
-        ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
-    );
-
-    set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
-        'numbertitle','off' );
+%     plot_transfer_function( ...
+%         units(k).TF, ...
+%         ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
+%     );
+% 
+%     set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
+%         'numbertitle','off' );
     
     % Calculate Gain at omega_0
     LF_Gain = LF_Gain * units(k).k_lf;
@@ -138,9 +170,9 @@ end
 % Compensate gain ( gain @ omega_0 should be 10dB )
 A = ( 10^( LF_Gain_Req_DB / 20 ) ) * ( 1 / LF_Gain ) * A;
 
-% % Plot Amplitude
-% plot_transfer_function( A, ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] );
-% set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
+% Plot Amplitude
+plot_transfer_function( A, ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] );
+set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
 % % Plot Attenuation
 % a = inv(A);

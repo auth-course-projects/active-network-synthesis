@@ -117,7 +117,7 @@ classdef Pole
             K = 2 + ( lpf_zero / q_c )^2;
             x = 0.5 * ( K + sqrt( K^2 - 4 ) );
 
-            assert( x > 1 );
+            assert( x >= 1 );
 
             bpf_zero1 = omega_0 * sqrt(x);
             bpf_zero2 = omega_0 / sqrt(x);
