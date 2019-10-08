@@ -54,9 +54,24 @@ end
 %     Frequency transformation simply adds $n_pairs zeros at origin.
 
 %   - scale poles
+hp_poles = Pole.empty( n_pairs, 0 );
 for k = 1 : n_pairs
-   poles(k) = poles(k).scaleOmega0( omega_0 );
+   hp_poles(k) = poles(k).scaleOmega0( omega_0 );
 end
+
+%   - add zeros
+hp_zeros = zeros( n_pairs, 1 );
+
+% Pole-Zero Plot
+[pole_plus, pole_minus] = hp_poles(1).sigmaOmega;
+P = [pole_plus, pole_minus];
+for k = 2 : length( hp_poles )
+    [pole_plus, pole_minus] = hp_poles(k).sigmaOmega;
+    P = cat( 2, P, [pole_plus, pole_minus] );
+end
+
+Z = cat( 1, 1i * hp_zeros, -1i * hp_zeros );
+pzplot( zpk( Z, P', 1 ) )
 
 
 %% Utilize Units
@@ -76,6 +91,7 @@ for k = 1 : n_units
     units( k ) = sallenkey_hpf( units( k ) );
 
 end
+
 
 %% Combine sub-units
 HF_Gain = 1;
@@ -106,9 +122,9 @@ end
 % Compensate gain ( gain @ omega_0 should be 10dB )
 A = ( 10^( HF_Gain_Req_DB / 20 ) ) * ( 1 / HF_Gain ) * A;
 
-% % % Plot Amplitude
-% plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_0] );
-% set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
+% Plot Amplitude
+plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_0] );
+set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
 % % Plot Attenuation
 % a = inv(A);

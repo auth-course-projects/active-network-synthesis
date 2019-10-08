@@ -90,7 +90,8 @@ for k = 1 : n_units
         
     else
         
-        % TODO: passive bilinear realization
+        % TODO: passive bilinear realization (not required since we are 
+        % designing Low-Pass IC filter of 4th order)
         
     end
 
