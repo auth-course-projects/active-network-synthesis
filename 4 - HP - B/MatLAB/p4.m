@@ -83,9 +83,9 @@ units = FilterUnit( n_units, 0 );
 for k = 1 : n_units
     
     units( k ) = FilterUnit( ...
-        poles( k ).Omega0, ...
-        poles( k ).Q, ...
-        0 ...
+        hp_poles( k ).Omega0, ...
+        hp_poles( k ).Q, ...
+        hp_zeros( k ) ...
     );
 
     units( k ) = sallenkey_hpf( units( k ) );
@@ -100,13 +100,13 @@ A = units(1).TF;
 % Plot tf of each sub-unit
 for k = 1 : n_units
    
-%     plot_transfer_function( ...
-%         units(k).TF, ...
-%         ( 0.5 / pi ) * [omega_s, omega_p, omega_0] ...
-%     );
-% 
-%     set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
-%         'numbertitle','off' );
+    plot_transfer_function( ...
+        units(k).TF, ...
+        ( 0.5 / pi ) * [omega_s, omega_p, omega_0] ...
+    );
+
+    set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
+        'numbertitle','off' );
     
     % Calculate Gain at HF
     HF_Gain = HF_Gain * units(k).k_hf;
@@ -126,18 +126,19 @@ A = ( 10^( HF_Gain_Req_DB / 20 ) ) * ( 1 / HF_Gain ) * A;
 plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_0] );
 set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
-% % Plot Attenuation
-% a = inv(A);
-% plot_transfer_function( a, ( 0.5 / pi ) * [omega_s, omega_p, omega_0] );
-% set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
+% Plot Attenuation
+a = inv(A);
+plot_transfer_function( a, ( 0.5 / pi ) * [omega_s, omega_p, omega_0] );
+set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
 
 
 %% Test Resulting System
-t = 0 : 1/40000 : 1/50 - 1/40000;
+Fs = 5e4;
+t = 0 : 1/Fs : 1 - 1/Fs;
 input = cos( 0.5 * omega_s * t ) + 0.6 * cos( 0.8 * omega_s * t ) + ...
     cos( 1.2 * omega_p * t ) + 0.8 * cos( 2.4 * omega_p * t ) + ...
     0.4 * cos( 3.5 * omega_p * t );
-test_sys( A, 'custom', t, input, 40000 );
+test_sys( A, 'custom', t, input, Fs );
 
 
 

@@ -131,10 +131,10 @@ A = ( 10^( LF_Gain_Req_DB / 20 ) ) * ( 1 / LF_Gain ) * A;
 plot_transfer_function( A, ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] );
 set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
-% % Plot Attenuation
-% a = inv(A);
-% plot_transfer_function( a, ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] );
-% set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
+% Plot Attenuation
+a = inv(A);
+plot_transfer_function( a, ( 0.5 / pi ) * [omega_s, omega_p, omega_hp] );
+set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
 
 
 %% Test Resulting System

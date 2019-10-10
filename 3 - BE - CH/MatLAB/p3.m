@@ -148,13 +148,13 @@ A = units(1).TF;
 % Plot tf of each sub-unit
 for k = 1 : n_units
    
-%     plot_transfer_function( ...
-%         units(k).TF, ...
-%         ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
-%     );
-% 
-%     set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
-%         'numbertitle','off' );
+    plot_transfer_function( ...
+        units(k).TF, ...
+        ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] ...
+    );
+
+    set(gcf, 'name', ['Unit #' num2str(k) ' | ' units(1, k).name], ...
+        'numbertitle','off' );
     
     % Calculate Gain at omega_0
     LF_Gain = LF_Gain * units(k).k_lf;
@@ -174,19 +174,20 @@ A = ( 10^( LF_Gain_Req_DB / 20 ) ) * ( 1 / LF_Gain ) * A;
 plot_transfer_function( A, ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] );
 set(gcf, 'name', 'Total Response | Amplitude', 'numbertitle','off' );
 
-% % Plot Attenuation
-% a = inv(A);
-% plot_transfer_function( a, ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] );
-% set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
+% Plot Attenuation
+a = inv(A);
+plot_transfer_function( a, ( 0.5 / pi ) * [omega_1, omega_2, omega_3, omega_4, omega_0] );
+set(gcf, 'name', 'Total Response | Attenuation', 'numbertitle','off' );
 
 
 %% Test Resulting System
-t = 0 : 1/40000 : 1/50 - 1/40000;
+Fs = 5e4;
+t = 0 : 1/Fs : 1 - 1/Fs;
 input = 0.8 * cos( ( omega_0 - ( omega_0 - omega_3 ) / 2 ) * t ) + ...
     cos( ( omega_0 + ( omega_0 + omega_3 ) / 2 ) * t ) + ...
     cos( 0.5 * omega_1 * t ) + 0.8 * cos( 2.4 * omega_2 * t ) + ...
     0.4 * cos( 3.5 * omega_2 * t );
-test_sys( A, 'custom', t, input, 40000 );
+test_sys( A, 'custom', t, input, Fs );
 
 
 

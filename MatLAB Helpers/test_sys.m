@@ -33,24 +33,39 @@ function test_sys( sys, type, param1, param2, param3 )
         
     end
     
+    if ( size( input, 1 ) < size( input, 2 ) )
+        input = input';
+    end
+    
+    if ( size( t, 1 ) < size( t, 2 ) )
+        t = t';
+    end
+    
     %% Simulate Output Signal
-    output_sine = lsim( sys, input, t );
+    output = lsim( sys, input, t );
     
     %% Plots
     figure
     subplot(2, 1, 1)
-    plot( t, input );
+    plot( t, input )
+    xlabel('Time (s)')
+    ylabel('Amplitude (V)')
 
     subplot(2, 1, 2)
     plot_spectrum( input, F_s );
+    
+    suptitle( 'Input Signal' )
 
     figure
-    
     subplot(2, 1, 1)
-    plot( t, output_sine );
+    plot( t, output )
+    xlabel('Time (s)')
+    ylabel('Amplitude (V)')
 
     subplot(2, 1, 2)
-    plot_spectrum( output_sine, F_s );
+    plot_spectrum( output, F_s );
+
+    suptitle( 'Output Signal' )
 
 end
 
